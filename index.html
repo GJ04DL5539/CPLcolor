@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CPL Color Picker</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f5f7fa;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+  }
+  .color-box {
+    width: 150px;
+    height: 150px;
+    margin: 1rem 0;
+    border-radius: 10px;
+    border: 2px solid #ccc;
+  }
+  .row, .slider-row {
+    margin: 0.5rem 0;
+    display: flex;
+    align-items: center;
+  }
+  label {
+    width: 80px;
+  }
+  input[type="range"] {
+    width: 200px;
+    margin-left: 0.5rem;
+  }
+  input[type="text"] {
+    width: 150px;
+    padding: 0.5rem;
+    margin-right: 0.5rem;
+    font-size: 1rem;
+  }
+  span.value {
+    width: 40px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<h1>CPL Color Picker</h1>
+
+<div class="row">
+  <label>CPL:</label>
+  <input type="text" id="cplInput" readonly>
+</div>
+
+<div class="slider-row">
+  <label>Red:</label>
+  <input type="range" id="sliderR" min="0" max="255" value="255" oninput="updateFromSliders()">
+  <span class="value" id="valR">255</span>
+</div>
+<div class="slider-row">
+  <label>Green:</label>
+  <input type="range" id="sliderG" min="0" max="255" value="136" oninput="updateFromSliders()">
+  <span class="value" id="valG">136</span>
+</div>
+<div class="slider-row">
+  <label>Blue:</label>
+  <input type="range" id="sliderB" min="0" max="255" value="51" oninput="updateFromSliders()">
+  <span class="value" id="valB">51</span>
+</div>
+<div class="slider-row">
+  <label>Light:</label>
+  <input type="range" id="sliderL" min="0" max="15" value="15" oninput="updateFromSliders()">
+  <span class="value" id="valL">F</span>
+</div>
+
+<div class="color-box" id="colorBox"></div>
+
+<script>
+function updateFromSliders(){
+  let R = parseInt(document.getElementById("sliderR").value);
+  let G = parseInt(document.getElementById("sliderG").value);
+  let B = parseInt(document.getElementById("sliderB").value);
+  let L = parseInt(document.getElementById("sliderL").value);
+
+  // Apply brightness multiplier
+  let factor = L/15;
+  let Rf = Math.round(R * factor);
+  let Gf = Math.round(G * factor);
+  let Bf = Math.round(B * factor);
+
+  // Update color box
+  document.getElementById("colorBox").style.backgroundColor = `rgb(${Rf},${Gf},${Bf})`;
+
+  // Update CPL-Full code
+  let cplFull = R.toString(16).padStart(2,'0').toUpperCase() +
+                G.toString(16).padStart(2,'0').toUpperCase() +
+                B.toString(16).padStart(2,'0').toUpperCase() +
+                L.toString(16).toUpperCase();
+  document.getElementById("cplInput").value = cplFull;
+
+  // Update slider values display
+  document.getElementById("valR").textContent = R;
+  document.getElementById("valG").textContent = G;
+  document.getElementById("valB").textContent = B;
+  document.getElementById("valL").textContent = L.toString(16).toUpperCase();
+}
+
+// Initialize default color
+updateFromSliders();
+</script>
+
+</body>
+</html>
